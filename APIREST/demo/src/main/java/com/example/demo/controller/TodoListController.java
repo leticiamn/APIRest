@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.demo.domain.TodoList;
+import com.example.demo.service.TodoListItemService;
 import com.example.demo.service.TodoListService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,27 +22,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/todolist")
 public class TodoListController {
-    
+
     @Autowired
     private TodoListService service;
 
     @GetMapping
     public ResponseEntity<List<TodoList>> GetAll() {
 
-        try{
+        try {
 
             List<TodoList> items = service.GetAll();
 
-            if(items.isEmpty()) 
+            if (items.isEmpty())
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
             return ResponseEntity.status(HttpStatus.OK).body(items);
 
-        }catch(Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @PostMapping
     public ResponseEntity<TodoList> create(@RequestBody TodoList todolist) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(todolist));
@@ -51,7 +52,7 @@ public class TodoListController {
     public ResponseEntity<TodoList> getById(@PathVariable Integer id) {
         Optional<TodoList> existingItemOptional = service.GetById(id);
 
-        if(existingItemOptional.isPresent()){
+        if (existingItemOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(existingItemOptional.get());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -63,13 +64,12 @@ public class TodoListController {
 
         TodoList todoList = service.update(item, id);
 
-        if(todoList != null){
+        if (todoList != null) {
             return ResponseEntity.status(HttpStatus.OK).body(service.update(item, id));
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
 
     @DeleteMapping("{id}")
     public ResponseEntity<HttpStatus> delete(@PathVariable Integer id) {
